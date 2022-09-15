@@ -73,6 +73,71 @@ def BC(n, b, k):
         digits.append(n % b)
         n = n // b
     if n > 0:
+        print(n)
         raise ValueError()
     return digits
 
+def initializeB(A, v):
+    B=list()
+    for i in range(len(A)):
+        B.append((A[i][0], (A[i][1], v[i])))
+    return B
+
+def RadixSort(U,b,A):
+    k= int(math.log(U,b))
+    vPrimes=list()
+    for i in range(len(A)):
+        vPrime=BC(A[i][0],b,k)
+        vPrimes.append(vPrime)
+    B=initializeB(A, vPrimes)
+    for j in range(k):
+        for i in range(len(A)):
+            kPrime=B[i][1][1][j]
+            B[i]= (kPrime,(B[i][1][0],B[i][1][1]))
+        B=countSort(b, B)
+    for i in range(len(A)):
+        A[i][0]=0
+        for j in range(len(vPrimes[i])):
+            A[i][0] += B[i][1][1][j]*(b**j)
+        A[i][1]=B[i][1][0]
+    return A
+
+# print(RadixSort(10,10,[[9,'apple'],[8,'banana']]))
+
+
+def test(n,U):
+    Count=0
+    Merge=0
+    Radix=0
+    for i in range(5):
+        lst=list()
+        for j in range(n):
+            lst.append([random.randint(0,U-1),j])
+        lstMerge=lst
+        lstRadix=lst
+        lstCount=lst
+
+        start=time.time()
+        countSort(U, lstCount)
+        end=time.time()
+        Count+=(end-start)
+
+        start=time.time()
+        mergeSort(lstMerge)
+        end=time.time()
+        Merge+=(end-start)
+
+        start=time.time()
+        RadixSort(U, 2, lstRadix)
+        end=time.time()
+        Radix+=(end-start)
+    print(Count/5)
+    print(Merge/5)
+    print(Radix/5)
+    
+    if Merge<Radix: print("merge passed rad")
+    if Radix<Count: print("rad passed count")
+
+test(2**16,2**7)
+
+# k= int(math.log(4,4))
