@@ -53,14 +53,19 @@ class BinarySearchTree:
     '''
     def select(self, ind):
         left_size = 0
-        if self.left is not None:
+        if self.left:
             left_size = self.left.size
         if ind == left_size:
             return self
-        if left_size > ind and self.left is not None:
+        if left_size > ind and self.left:
             return self.left.select(ind)
-        if left_size < ind and self.right is not None:
-            return self.right.select(ind)
+        if left_size < ind and self.right:
+            return self.right.select(ind-left_size-1) #right search updating with smaller tree
+
+        # Original code:
+        # if left_size < ind and self.right is not None:
+        #     return self.right.select(ind)
+
         return None
 
 
@@ -73,9 +78,9 @@ class BinarySearchTree:
             return None
         elif self.key == key:
             return self
-        elif self.key < key and self.right is not None:
+        elif self.key < key and self.right:
             return self.right.search(key)
-        elif self.left is not None:
+        elif self.left:
             return self.left.search(key)
         return None
     
@@ -88,20 +93,23 @@ class BinarySearchTree:
     returns the original (top level) tree - allows for easy chaining in tests
     '''
     def insert(self, key):
+        #size.setter()
         if self.key is None:
             self.key = key
         elif self.key > key: 
             if self.left is None:
                 self.left = BinarySearchTree(self.debugger)
+            #size(self.left, self.left.size+1)
             self.left.insert(key)
         elif self.key < key:
             if self.right is None:
                 self.right = BinarySearchTree(self.debugger)
+            #self.size(self.right, self.right.size+1)
             self.right.insert(key)
         self.calculate_sizes()
         return self
 
-    
+
     ####### Part b #######
 
     '''
@@ -126,7 +134,42 @@ class BinarySearchTree:
        11 
     '''
     def rotate(self, direction, child_side):
-        # Your code goes here
+        
+        if child_side=="R":
+            base=self.right
+        else:
+            base=self.left
+
+
+
+
+        # if direction=="L":
+        #     newBase=base.right
+        #     holder=newBase.left
+
+        #     newBase.left=base
+        #     base.right = holder
+            
+        # else:
+        #     newBase=base.left
+        #     holder=newBase.right
+
+        #     newBase.right=base
+        #     base.left = holder
+
+        # self.calculate_sizes()
+        # return self
+
+            # y.size=copy.size
+
+            # if copy.right:
+            #     y.left.size=copy.right.size
+
+            # if copy.left:
+            #     y.right.size=copy.left.size
+
+
+
         return self
 
     def print_bst(self):
