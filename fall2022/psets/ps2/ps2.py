@@ -1,3 +1,6 @@
+from re import A
+
+
 class BinarySearchTree:
     # left: BinarySearchTree
     # right: BinarySearchTree
@@ -93,20 +96,18 @@ class BinarySearchTree:
     returns the original (top level) tree - allows for easy chaining in tests
     '''
     def insert(self, key):
-        #size.setter()
         if self.key is None:
             self.key = key
         elif self.key > key: 
             if self.left is None:
                 self.left = BinarySearchTree(self.debugger)
-            #size(self.left, self.left.size+1)
             self.left.insert(key)
+            self.size+=1
         elif self.key < key:
             if self.right is None:
                 self.right = BinarySearchTree(self.debugger)
-            #self.size(self.right, self.right.size+1)
             self.right.insert(key)
-        self.calculate_sizes()
+            self.size+=1
         return self
 
 
@@ -134,43 +135,58 @@ class BinarySearchTree:
        11 
     '''
     def rotate(self, direction, child_side):
-        
+
         if child_side=="R":
             base=self.right
         else:
             base=self.left
 
+        if direction=="L":
+            A=base.left
+            B=base.right.left
 
+            x=base.right
+            holder=x.left
+            base.right=holder
+            x.left=base
 
-
-        # if direction=="L":
-        #     newBase=base.right
-        #     holder=newBase.left
-
-        #     newBase.left=base
-        #     base.right = holder
+            if child_side == "R":
+                self.right = x
+            else:
+                self.left = x
             
-        # else:
-        #     newBase=base.left
-        #     holder=newBase.right
+            x.size=base.size
+            if x.left is not None:
+                x.left.size=1
+                if A is not None:
+                    x.left.size+=A.size
+                if base.right is not None and B is not None:
+                    x.left.size+=B.size
+            
+        else:
+            B=base.left.right
+            C=base.right
+            
+            x=base.left
+            holder=x.right
+            base.left=holder
+            x.right=base
 
-        #     newBase.right=base
-        #     base.left = holder
+            if child_side == "R":
+                self.right = x
+            else:
+                self.left = x
 
-        # self.calculate_sizes()
-        # return self
-
-            # y.size=copy.size
-
-            # if copy.right:
-            #     y.left.size=copy.right.size
-
-            # if copy.left:
-            #     y.right.size=copy.left.size
-
-
+            x.size=base.size
+            if x.right is not None:
+                x.right.size=1
+                if C is not None:
+                    x.right.size+C.size
+                if base.left is not None and B is not None:
+                    x.right.size+=B.size
 
         return self
+
 
     def print_bst(self):
         if self.left is not None:
