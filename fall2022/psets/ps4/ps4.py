@@ -29,20 +29,21 @@ i: an integer [0, n-1]
 returns: An key-value pair (Kj, Vj) such that Kj is an i’th smallest key.
 '''
 
-
 def QuickSelect(arr, i):
     rand=get_random_index(arr)
     less=[]
     eq=[]
     more=[]
     for x in range(len(arr)):
-        if arr[x]<arr[rand]: less.append(arr[x])
-        elif arr[x]>arr[rand]: more.append(arr[x])
-        else: eq.append(arr[x])
-        
-    if i<len(less): QuickSelect(less, i)
-    elif i>=len(less)+len(eq): QuickSelect(more, i-len(less)-len(eq))
-    else: return eq[0]
+        if arr[x][0]<arr[rand][0]: less+=[arr[x]]
+        elif arr[x][0]>arr[rand][0]: more+=[arr[x]]
+        else: eq+=[arr[x]]
+  
+    if i<(len(less)): return QuickSelect(less, i)
+    elif i>=(len(less)+len(eq)): return QuickSelect(more, i-len(less)-len(eq))
+    else:
+        var=eq[0]
+        return var
 
     # Feel free to use get_random_index(arr) or get_random_int(start_inclusive, end_inclusive)
     # ... see the helper functions below
@@ -77,8 +78,7 @@ def MergeSortSelect(arr, query_list):
 
 def experiments():
     # Edit this parameter
-    h=6
-    k = [h,h,h,h,h]
+    k = [12,12,12,12,12]
 
     # Feel free to edit these initial parameters
 
