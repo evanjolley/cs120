@@ -1,5 +1,7 @@
 from itertools import product, combinations
 
+from numpy import empty
+
 '''
 Before you start: Read the README and the Graph implementation below.
 '''
@@ -129,45 +131,56 @@ def bfs_2_coloring(G: Graph, precolored_nodes=None):
     
     # TODO: Complete this function by implementing two-coloring using the colors 0 and 1.
     # If there is no valid coloring, reset all the colors to None using G.reset_colors()
-    # For a given node u, its edges are located at self.edges[u] and its color is self.color[u].
 
-    # for coloring in product(range(0,k), repeat=G.N):
-    #     G.colors = list(coloring)
-    #     if G.is_graph_coloring_valid():
-    #         return G.colors
-
-    # for u in range(G.N):
-    #     counter=0
-    #     for w in G.edges[u]:
-    #         if G.colors[w]==1:
-    #             G.colors[u]==0
-    #         elif G.colors[w]==0:
-    #             G.colors[u]==1
-
-    max=0
-    for u in range(G.N):
-        if len(G.edges[u])>max:
-            max=u
+    def maxfinder(n):
+        max=0
+        for u in n:
+            if len(G.edges[u])>max:
+                max=u
+        return max
     
-    G.colors[max]==0
-    def inner(x):
-        if len(visited)==G.N:
-            return True
-        for i in G.edges[x]:
-            if G.colors[x]==G.colors[i]:
-                return False
-            else:
-                G.colors[i]=(G.colors[x]+1) % 2
-                visited.add(i)
-        for i in G.edges[x]:
-            inner(i)
+    max=maxfinder(range(G.N))
+    G.colors[max]=0
+    queue=[max]
 
-    check=inner(max)
-    if check:
-        return G.colors
-    else:
-        G.reset_colors()
-        return None
+    def inner(x):
+        if x==[]:
+            return 0
+        else:
+            base=x[0]
+
+        for i in G.edges[base]:
+            if G.colors[i]==None:
+                queue.append(i)
+            if G.colors[i]==None:
+                G.colors[i]=(G.colors[base]+1) % 2
+            else:
+                if G.colors[base]==G.colors[i]:
+                    return 1
+                
+                
+        queue.remove(base)
+        visited.add(base)
+
+    while True:
+        check = inner(queue)
+
+        if check==0:
+            if G.N==len(visited):
+                return G.colors
+            else:
+                separate=[]
+                for i in range(G.N):
+                    if i not in visited:
+                        separate.append(i)
+                max=maxfinder(separate)
+                G.colors[max]=0
+                queue=[max]
+
+        elif check==1:
+            print(3)
+            G.reset_colors()
+            return None
 
 '''
     Part B: Implement is_independent_set.
