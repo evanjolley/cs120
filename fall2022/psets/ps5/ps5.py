@@ -13,7 +13,7 @@ class Graph:
     '''
 
     # Initializes the number of nodes, sets of edges for each node, and colors
-    def __init__(self, N, edges = None, colors = None):
+    def __init__(self, N: int, edges = None, colors = None):
         self.N = N
         self.edges = [set(lst) for lst in edges] if edges is not None else [set() for _ in range(N)]
         self.colors = [c for c in colors] if colors is not None else [None for _ in range(N)]
@@ -113,7 +113,7 @@ def exhaustive_search_coloring(G, k=3):
 # Precondition: Assumes that the precolored_nodes form an independent set.
 # If successful, modifies G.colors and returns the coloring.
 # If no coloring is possible, resets all of G's colors to None and returns None.
-def bfs_2_coloring(G, precolored_nodes=None):
+def bfs_2_coloring(G: Graph, precolored_nodes=None):
     # Assign every precolored node to have color 2
     # Initialize visited set to contain precolored nodes if they exist
     visited = set()
@@ -129,9 +129,45 @@ def bfs_2_coloring(G, precolored_nodes=None):
     
     # TODO: Complete this function by implementing two-coloring using the colors 0 and 1.
     # If there is no valid coloring, reset all the colors to None using G.reset_colors()
+    # For a given node u, its edges are located at self.edges[u] and its color is self.color[u].
+
+    # for coloring in product(range(0,k), repeat=G.N):
+    #     G.colors = list(coloring)
+    #     if G.is_graph_coloring_valid():
+    #         return G.colors
+
+    # for u in range(G.N):
+    #     counter=0
+    #     for w in G.edges[u]:
+    #         if G.colors[w]==1:
+    #             G.colors[u]==0
+    #         elif G.colors[w]==0:
+    #             G.colors[u]==1
+
+    max=0
+    for u in range(G.N):
+        if len(G.edges[u])>max:
+            max=u
     
-    G.reset_colors()
-    return None
+    G.colors[max]==0
+    def inner(x):
+        if len(visited)==G.N:
+            return True
+        for i in G.edges[x]:
+            if G.colors[x]==G.colors[i]:
+                return False
+            else:
+                G.colors[i]=(G.colors[x]+1) % 2
+                visited.add(i)
+        for i in G.edges[x]:
+            inner(i)
+
+    check=inner(max)
+    if check:
+        return G.colors
+    else:
+        G.reset_colors()
+        return None
 
 '''
     Part B: Implement is_independent_set.
