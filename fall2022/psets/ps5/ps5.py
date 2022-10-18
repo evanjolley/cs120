@@ -135,12 +135,8 @@ def bfs_2_coloring(G: Graph, precolored_nodes=None):
             if len(G.edges[u])>max:
                 max=u
         return max
-    
-    max=maxfinder(range(G.N))
-    G.colors[max]=0
-    queue=[max]
 
-    def inner(x):
+    def color(x):
         if x==[]:
             return 0
         else:
@@ -158,8 +154,12 @@ def bfs_2_coloring(G: Graph, precolored_nodes=None):
         queue.remove(base)
         visited.add(base)
 
+    max=maxfinder(range(G.N))
+    G.colors[max]=0
+    queue=[max]
+
     while True:
-        check = inner(queue)
+        check = color(queue)
 
         if check==0:
             if G.N==len(visited):
@@ -183,19 +183,12 @@ def bfs_2_coloring(G: Graph, precolored_nodes=None):
 # Given an instance of the Graph class G and a subset of precolored nodes,
 # Checks if subset is an independent set in G 
 def is_independent_set(G, subset):
-    # color=G.colors[subset[0]]
-    # for i in subset:
-    #     if color!=G.colors[subset[i]]:
-    #         return False
-    # return True
-    subsetList=list(subset)
     edgeList=set()
-    for i in subsetList:
-        for j in G.edges[subsetList[i]]:
+    for i in subset:
+        for j in G.edges[i]:
             edgeList.add(j)
-        # edges=list(G.edges[subsetList[i]])
         
-    for i in subsetList:
+    for i in subset:
         if i in edgeList:
             return False
     return True
@@ -224,30 +217,13 @@ def is_independent_set(G, subset):
 # If successful, modifies G.colors and returns the coloring.
 # If no coloring is possible, resets all of G's colors to None and returns None.
 def iset_bfs_3_coloring(G:Graph):
-    def graphCreator(iset):
-        Gs=Graph(0)
-        Gs.edges=G.edges
-        for i in range(G.N):
-            if i not in iset:
-                Gs.add_node()
-            else:
-                removedEdges=Gs.edges[i]
-                for j in removedEdges:
-                     Gs.remove_edge(i,j)        
-        # for i in range(G.N):
-        #     if i in iset:
-        #         for j in G.edges[i]:
-        #             Gs.remove_edge(i,j)
-        return Gs
-
-    for i in range(G.N//3):
-        for j in combinations(range(G.N), i):
-            if is_independent_set(G, j):
-                Gs=graphCreator(j)
-                fs=bfs_2_coloring(Gs)
-                if fs!=None:
-                    threeColor = bfs_2_coloring(Gs, j)
-                    return threeColor
+    for i in range(G.N//3+1):
+        for subset in combinations(range(G.N), i):
+            subset=list(subset)
+            if is_independent_set(G, subset):
+                G.colors=bfs_2_coloring(G, subset)
+                if G.colors is not None:
+                    return G.colors
 
     G.reset_colors()
     return None

@@ -35,12 +35,14 @@ random.seed(120)
 '''
 
 # The timeout length in seconds
-TIMEOUT_LENGTH = 10
+TIMEOUT_LENGTH = 20
+# O(1.89^n)<<<<O(m*3^n)
+# m is runtime of checking and have to check at each possibility in exhaustive
 
 def benchmark():
     # You may experiment with these parameters if you wish!
     # Each of these ranges is formatted with a minimum, maximum, and step size.
-    subgraph_line_parameter_range = (100, 300, 100)
+    subgraph_line_parameter_range = (10, 30, 10)
     cluster_graph_p_parameter_range = (0.2, 0.95, 0.15)
     cluster_graph_cluster_size_parameter_range = (2, 26, 8)
     cluster_graph_cluster_quantity_parameter_range = (2, 5, 1)
