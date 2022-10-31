@@ -187,10 +187,15 @@ def iset_bfs_3_coloring(G):
 # Given an instance of the Graph class G, reduces 3 coloring to SAT
 # If successful, modifies G.colors and returns the coloring.
 # If no coloring is possible, resets all of G's colors to None and returns None.
-def sat_3_coloring(G):
+def sat_3_coloring(G: Graph):
     solver = Glucose3()
 
-    # TODO: Add the clauses to the solver
+    for u in range(G.N):
+        solver.add_clause([3*u+1, 3*u+2, 3*u+3])
+        for v in G.edges[u]:
+            solver.add_clause([-(3*u+1),-(3*v+1)])
+            solver.add_clause([-(3*u+2),-(3*v+2)])
+            solver.add_clause([-(3*u+3),-(3*v+3)])
 
     # Attempt to solve, return None if no solution possible
     if not solver.solve():
@@ -200,7 +205,11 @@ def sat_3_coloring(G):
     # Accesses the model in form [-v1, v2, -v3 ...], which denotes v1 = False, v2 = True, v3 = False, etc.
     solution = solver.get_model()
 
-    # TODO: If a solution is found, convert it into a coloring and update G.colors
+    for num, val in enumerate(solution):
+        if val>0:
+            color = num % 3
+            vertex = num // 3
+            G.colors[vertex] = color
 
     return G.colors
 
